@@ -1,22 +1,5 @@
-use aoc::read_input_for_day;
+use aoc;
 use std::io;
-use structopt::StructOpt;
-
-#[derive(StructOpt)]
-#[structopt(
-  about = "Solutions for Advent of Code 2020",
-  author = "Drew Wyatt <drew.j.wyatt@gmail.com>",
-  name = "advent-of-code-2020"
-)]
-struct Cli {
-  #[structopt(
-    default_value = "1",
-    help = "Part 1 or 2",
-    short,
-    long
-  )]
-  part: i32,
-}
 
 fn part_1(lines: Vec<i32>) -> Option<i32> {
   let mut product: Option<i32> = None;
@@ -64,10 +47,10 @@ fn part_2(lines: Vec<i32>) -> Option<i32> {
 }
 
 fn main() -> io::Result<()> {
-  let lines = read_input_for_day("day-1")?;
-  let args = Cli::from_args();
+  let lines = aoc::read_input_for_day("day-1")?;
+  let part = aoc::read_part_for_day();
 
-  let answer = if args.part == 1 { part_1(lines) } else { part_2(lines) };
-  println!("Part {} answer: {}", args.part, answer.unwrap());
+  let answer = if part == 1 { part_1(lines) } else { part_2(lines) };
+  println!("Part {} answer: {}", part, answer.unwrap());
   Ok(())
 }
