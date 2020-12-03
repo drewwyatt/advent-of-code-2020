@@ -44,3 +44,31 @@ where
     .parse::<T>()
     .map_err(|_| AdventError::InvalidRegex)
 }
+
+#[derive(Debug)]
+pub struct Part2Line {
+  pub index_1: usize,
+  pub index_2: usize,
+  pub character: char,
+  pub password: String,
+}
+
+impl FromStr for Part2Line {
+  type Err = AdventError;
+
+  fn from_str(s: &str) -> Result<Self, Self::Err> {
+    lazy_static! {
+      static ref RE: Regex = Regex::new(r"^(\d+)\-(\d+) ([a-z]): ([a-z]+)$").unwrap();
+    }
+    let captures = RE.captures(s).ok_or(AdventError::InvalidRegex)?;
+
+    let position_1: usize = parse_from_captures(&captures, 1)?;
+    let position_2: usize = parse_from_captures(&captures, 2)?;
+    Ok(Part2Line {
+      index_1: position_1 - 1,
+      index_2: position_2 - 1,
+      character: parse_from_captures(&captures, 3)?,
+      password: parse_from_captures(&captures, 4)?,
+    })
+  }
+}
