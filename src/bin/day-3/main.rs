@@ -1,10 +1,12 @@
 use aoc;
 use std::{
+  cmp::PartialEq,
   io::{Error, Result},
   str::FromStr,
 };
 
-pub enum Cell {
+#[derive(Debug, PartialEq)]
+enum Cell {
   Tree,
   Snow,
 }
@@ -19,7 +21,7 @@ impl Row {
   }
 
   fn is_tree(&self, index: usize) -> bool {
-    self.get(index) == &(Some(Cell::Tree))
+    self.get(index) == Some(&Cell::Tree)
   }
 }
 
@@ -38,16 +40,24 @@ impl FromStr for Row {
 
 fn main() -> Result<()> {
   let input = aoc::read_input_for_day::<Row>("day-3")?;
+  let down = 1;
   let right = 3;
-  let mut index = 0;
-  let mut trees = 0;
+  let mut next_row_index = down;
+  let mut cell_index = right;
 
-  for row in input.iter() {
-    index += right;
-    if row.is_tree(index) {
-      trees += 1;
+  let number_of_trees = input.iter().enumerate().fold(0, |mut trees, (index, row)| {
+    if index == next_row_index {
+      if row.is_tree(cell_index) {
+        trees += 1;
+      }
+      next_row_index += down;
+      cell_index += right;
     }
-  }
+
+    trees
+  });
+
+  println!("The answer is: {}", number_of_trees);
 
   Ok(())
 }
