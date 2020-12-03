@@ -28,9 +28,9 @@ impl FromStr for Day2Line {
         let captures = RE.captures(s).ok_or(AdventError::InvalidRegex)?;
 
         let count_start = parse_from_captures(&captures, 1)?;
-        let count_end = parse_from_captures(&captures, 2)?;
+        let count_end: i32 = parse_from_captures(&captures, 2)?;
         Ok(Day2Line {
-            count_range: count_start..count_end,
+            count_range: count_start..(count_end + 1), // add one to count_end to make `.contains` work
             character: parse_from_captures(&captures, 3)?,
             password: parse_from_captures(&captures, 4)?,
         })
@@ -51,6 +51,15 @@ where
 
 fn main() -> io::Result<()> {
     let input = aoc::read_input_for_day::<Day2Line>("day-2")?;
-    println!("{:?}", input.get(0));
+
+    let count = input
+        .iter()
+        .filter(|i| {
+            i.count_range
+                .contains(&(i.password.chars().filter(|c| c == &(i.character)).count() as i32))
+        })
+        .count();
+
+    println!("Answer: {}", count);
     Ok(())
 }
