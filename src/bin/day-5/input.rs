@@ -68,7 +68,6 @@ impl BoardingPass {
   pub fn seat(&self) -> Result<i32, AdventError> {
     let mut tree = Tree::new(NUMBER_OF_SEATS);
     for letter in self.seat_code.iter() {
-      println!("{:?}", tree);
       match letter {
         SeatLetter::L => tree.lower(),
         SeatLetter::R => tree.upper(),
@@ -125,7 +124,7 @@ impl Tree {
 
   fn value(&self) -> Result<i32, AdventError> {
     if self.done() {
-      Ok(self.size)
+      Ok(self.start)
     } else {
       Err(AdventError::InvalidTree)
     }
@@ -142,19 +141,3 @@ impl Tree {
     self
   }
 }
-
-// let mut tree = Tree {
-//   start: 0,
-//   size: 128,
-// };
-// println!("tree {:?}", tree);
-// // BFFFBBFRRR
-// // FFFBBBFRRR: row 14, column 7, seat ID 119.
-// tree.lower();
-// tree.lower();
-// tree.lower();
-// tree.upper();
-// tree.upper();
-// tree.upper();
-// tree.lower();
-// println!("tree {:?}", tree);
