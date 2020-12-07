@@ -81,7 +81,7 @@ pub enum Field<'a> {
   CountryId(Option<String>), // We don't care about this
 }
 
-pub fn documents_from_input(input: Vec<String>) -> Result<Vec<Document<'a>>> {
+pub fn documents_from_input<'a>(input: Vec<&'a str>) -> Result<Vec<Document<'a>>> {
   let documents = input.iter().fold(vec![Document::new()], |mut docs, line| {
     lazy_static! {
       static ref RE: Regex = Regex::new(r"([a-z]{3}):(\S+)").unwrap();
