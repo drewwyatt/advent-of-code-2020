@@ -23,7 +23,7 @@ enum Name {
   HairColor,
   EyeColor,
   PassportId,
-  // CountryId, // We don't care about this
+  CountryId, // We don't care about this
 }
 
 struct Field {
@@ -35,7 +35,10 @@ impl Field {
     let name = Field::name_from_str(capture.get(1).unwrap().as_str());
     match name {
       Some(n) => Ok(Field { name: n }),
-      None => Err(Error::new(ErrorKind::Other, "Error parsing input")),
+      None => Err(Error::new(
+        ErrorKind::Other,
+        format!("Error parsing input '{:?}'", capture),
+      )),
     }
   }
 
@@ -48,6 +51,7 @@ impl Field {
       "hcl" => Some(Name::HairColor),
       "ecl" => Some(Name::EyeColor),
       "pid" => Some(Name::PassportId),
+      "cid" => Some(Name::CountryId),
       _ => None,
     }
   }
