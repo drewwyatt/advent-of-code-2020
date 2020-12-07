@@ -10,7 +10,7 @@ struct Document {
 }
 
 impl Document {
-  fn push(mut self, field: Field) {
+  fn push(&mut self, field: Field) {
     self.fields.push(field);
   }
 }
