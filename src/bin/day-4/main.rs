@@ -65,10 +65,8 @@ fn main() -> Result<()> {
 
       if RE.is_match(line) {
         for cap in RE.captures_iter(line) {
-          match docs.last() {
-            Some(doc) => doc.push(Field::from(&cap).unwrap()),
-            None => (),
-          }
+          let doc = docs.last_mut().unwrap();
+          doc.push(Field::from(&cap).unwrap())
         }
       } else {
         docs.push(Document { fields: vec![] })
