@@ -3,29 +3,32 @@ use std::collections::HashSet;
 use std::io::{Error, ErrorKind, Result};
 
 const REQUIRED_DOCUMENT_FIELDS: [Field; 7] = [
-  Field::BirthYear,
-  Field::IssueYear,
-  Field::ExpirationYear,
-  Field::Height,
-  Field::HairColor,
-  Field::EyeColor,
-  Field::PassportId,
+  Field::BirthYear(None),
+  Field::IssueYear(None),
+  Field::ExpirationYear(None),
+  Field::Height(None),
+  Field::HairColor(None),
+  Field::EyeColor(None),
+  Field::PassportId(None),
 ];
 
 #[derive(Debug)]
-pub struct Document {
-  fields: HashSet<Field>,
+pub struct Document<'a> {
+  fields: HashSet<Field<'a>>,
 }
 
-impl Document {
+impl<'a> Document<'a> {
   fn new() -> Self {
     Document {
       fields: HashSet::new(),
     }
   }
 
-  fn add(&mut self, capture: &Captures) -> Result<()> {
-    let name = self.field_from_str(capture.get(1).unwrap().as_str());
+  fn add(&mut self, capture: &Captures<'a>) -> Result<()> {
+    let name = self.field_from_str(
+      capture.get(1).unwrap().as_str(),
+      capture.get(2).unwrap().as_str(),
+    );
     match name {
       Some(field) => {
         self.fields.insert(field);
@@ -38,16 +41,16 @@ impl Document {
     }
   }
 
-  fn field_from_str(&self, s: &str) -> Option<Field> {
-    match s {
-      "byr" => Some(Field::BirthYear),
-      "iyr" => Some(Field::IssueYear),
-      "eyr" => Some(Field::ExpirationYear),
-      "hgt" => Some(Field::Height),
-      "hcl" => Some(Field::HairColor),
-      "ecl" => Some(Field::EyeColor),
-      "pid" => Some(Field::PassportId),
-      "cid" => Some(Field::CountryId),
+  fn field_from_str(&self, key: &str, value: &'a str) -> Option<Field<'a>> {
+    match key {
+      "byr" => Some(Field::BirthYear(Some(value))),
+      "iyr" => Some(Field::IssueYear(None)),
+      "eyr" => Some(Field::ExpirationYear(None)),
+      "hgt" => Some(Field::Height(None)),
+      "hcl" => Some(Field::HairColor(None)),
+      "ecl" => Some(Field::EyeColor(None)),
+      "pid" => Some(Field::PassportId(None)),
+      "cid" => Some(Field::CountryId(None)),
       _ => None,
     }
   }
@@ -67,21 +70,21 @@ impl Document {
 }
 
 #[derive(Debug, Eq, Hash, PartialEq)]
-pub enum Field {
-  BirthYear,
-  IssueYear,
-  ExpirationYear,
-  Height,
-  HairColor,
-  EyeColor,
-  PassportId,
-  CountryId, // We don't care about this
+pub enum Field<'a> {
+  BirthYear(Option<&'a str>),
+  IssueYear(Option<String>),
+  ExpirationYear(Option<String>),
+  Height(Option<String>),
+  HairColor(Option<String>),
+  EyeColor(Option<String>),
+  PassportId(Option<String>),
+  CountryId(Option<String>), // We don't care about this
 }
 
-pub fn documents_from_input(input: Vec<String>) -> Result<Vec<Document>> {
+pub fn documents_from_input(input: Vec<String>) -> Result<Vec<Document<'a>>> {
   let documents = input.iter().fold(vec![Document::new()], |mut docs, line| {
     lazy_static! {
-      static ref RE: Regex = Regex::new(r"([a-z]{3}):").unwrap();
+      static ref RE: Regex = Regex::new(r"([a-z]{3}):(\S+)").unwrap();
     }
 
     if RE.is_match(line) {

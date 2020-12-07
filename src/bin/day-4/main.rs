@@ -2,11 +2,12 @@
 extern crate lazy_static;
 mod input;
 
-use aoc::read_input_for_day;
+use aoc::{read_input_for_day, read_part_for_day};
 use input::documents_from_input;
 use std::io::Result;
 
 fn main() -> Result<()> {
+  let part = read_part_for_day();
   let documents = documents_from_input(read_input_for_day::<String>("day-4")?)?;
   let valid_documents = documents.iter().filter(|d| d.is_valid()).count();
   println!("Day-4 answer: {}", valid_documents);
