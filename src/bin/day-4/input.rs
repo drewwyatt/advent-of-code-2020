@@ -2,6 +2,16 @@ use regex::{Captures, Regex};
 use std::collections::HashSet;
 use std::io::{Error, ErrorKind, Result};
 
+const REQUIRED_DOCUMENT_FIELDS: [Field; 7] = [
+  Field::BirthYear,
+  Field::IssueYear,
+  Field::ExpirationYear,
+  Field::Height,
+  Field::HairColor,
+  Field::EyeColor,
+  Field::PassportId,
+];
+
 #[derive(Debug)]
 pub struct Document {
   fields: HashSet<Field>,
@@ -40,6 +50,19 @@ impl Document {
       "cid" => Some(Field::CountryId),
       _ => None,
     }
+  }
+
+  pub fn is_valid(&self) -> bool {
+    REQUIRED_DOCUMENT_FIELDS.iter().fold(
+      true,
+      |acc, req| {
+        if acc {
+          self.fields.contains(req)
+        } else {
+          acc
+        }
+      },
+    )
   }
 }
 

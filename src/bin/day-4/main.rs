@@ -8,6 +8,7 @@ use std::io::Result;
 
 fn main() -> Result<()> {
   let documents = documents_from_input(read_input_for_day::<String>("day-4")?)?;
-  println!("docs: {:?}", documents);
+  let valid_documents = documents.iter().filter(|d| d.is_valid()).count();
+  println!("Day-4 answer: {}", valid_documents);
   Ok(())
 }
