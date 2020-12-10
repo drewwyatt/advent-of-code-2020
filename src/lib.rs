@@ -1,3 +1,4 @@
+use regex::Captures;
 use std::fs;
 use std::str::FromStr;
 use structopt::StructOpt;
@@ -31,4 +32,17 @@ struct Cli {
 
 pub fn read_part_for_day() -> i32 {
     Cli::from_args().part
+}
+
+pub fn parse_from_captures_or<T, U>(captures: &Captures, index: usize, err: U) -> Result<T, U>
+where
+    T: FromStr,
+    U: Copy,
+{
+    captures
+        .get(index)
+        .ok_or(err)?
+        .as_str()
+        .parse::<T>()
+        .map_err(|_| err)
 }

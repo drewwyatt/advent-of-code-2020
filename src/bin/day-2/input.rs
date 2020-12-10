@@ -1,8 +1,9 @@
-use regex::{Captures, Regex};
+use aoc::parse_from_captures_or;
+use regex::Regex;
 use std::ops::Range;
 use std::str::FromStr;
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub enum AdventError {
   InvalidRegex,
 }
@@ -23,26 +24,14 @@ impl FromStr for Part1Line {
     }
     let captures = RE.captures(s).ok_or(AdventError::InvalidRegex)?;
 
-    let count_start = parse_from_captures(&captures, 1)?;
-    let count_end: i32 = parse_from_captures(&captures, 2)?;
+    let count_start = parse_from_captures_or(&captures, 1, AdventError::InvalidRegex)?;
+    let count_end: i32 = parse_from_captures_or(&captures, 2, AdventError::InvalidRegex)?;
     Ok(Part1Line {
       count_range: count_start..(count_end + 1), // add one to count_end to make `.contains` work
-      character: parse_from_captures(&captures, 3)?,
-      password: parse_from_captures(&captures, 4)?,
+      character: parse_from_captures_or(&captures, 3, AdventError::InvalidRegex)?,
+      password: parse_from_captures_or(&captures, 4, AdventError::InvalidRegex)?,
     })
   }
-}
-
-fn parse_from_captures<T>(captures: &Captures, index: usize) -> Result<T, AdventError>
-where
-  T: FromStr,
-{
-  captures
-    .get(index)
-    .ok_or(AdventError::InvalidRegex)?
-    .as_str()
-    .parse::<T>()
-    .map_err(|_| AdventError::InvalidRegex)
 }
 
 #[derive(Debug)]
@@ -62,13 +51,13 @@ impl FromStr for Part2Line {
     }
     let captures = RE.captures(s).ok_or(AdventError::InvalidRegex)?;
 
-    let position_1: usize = parse_from_captures(&captures, 1)?;
-    let position_2: usize = parse_from_captures(&captures, 2)?;
+    let position_1: usize = parse_from_captures_or(&captures, 1, AdventError::InvalidRegex)?;
+    let position_2: usize = parse_from_captures_or(&captures, 2, AdventError::InvalidRegex)?;
     Ok(Part2Line {
       index_1: position_1 - 1,
       index_2: position_2 - 1,
-      character: parse_from_captures(&captures, 3)?,
-      password: parse_from_captures(&captures, 4)?,
+      character: parse_from_captures_or(&captures, 3, AdventError::InvalidRegex)?,
+      password: parse_from_captures_or(&captures, 4, AdventError::InvalidRegex)?,
     })
   }
 }
