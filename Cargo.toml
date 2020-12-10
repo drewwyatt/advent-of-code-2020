@@ -21,6 +21,8 @@ name = "day-4"
 name = "day-5"
 [[bin]]
 name = "day-6"
+[[bin]]
+name = "day-8"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
