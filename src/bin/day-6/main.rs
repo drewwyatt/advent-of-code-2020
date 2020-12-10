@@ -1,44 +1,39 @@
-use aoc::read_input_for_day;
-use std::{collections::HashSet, io};
+mod input;
 
-struct Questionnaire {
-  data: HashSet<char>,
-}
+use aoc::{read_input_for_day, read_part_for_day};
+use input::{Part1, Part2, Questionnaire};
+use std::io;
 
-impl Questionnaire {
-  fn new() -> Self {
-    Questionnaire {
-      data: HashSet::new(),
-    }
-  }
-
-  fn check(&mut self, answers: &str) {
-    for c in answers.chars() {
-      self.data.insert(c);
-    }
-  }
-
-  fn len(&self) -> usize {
-    self.data.len()
-  }
-}
-
-fn main() -> io::Result<()> {
-  let number_of_affirmatives = read_input_for_day::<String>("day-6")?
+fn calculate<T>(input: Vec<String>) -> usize
+where
+  T: Questionnaire,
+{
+  input
     .iter()
-    .fold(vec![Questionnaire::new()], |mut questionnaires, line| {
+    .fold(vec![T::new()], |mut questionnaires, line| {
       if line.len() > 0 {
         let q = questionnaires.last_mut().unwrap();
-        q.check(line);
+        q.add(line);
       } else {
-        questionnaires.push(Questionnaire::new());
+        questionnaires.push(T::new());
       }
 
       questionnaires
     })
     .iter()
-    .fold(0, |acc, q| acc + q.len());
+    .fold(0, |acc, q| acc + q.calculate())
+}
 
-  println!("answer: {}", number_of_affirmatives);
+fn main() -> io::Result<()> {
+  let input = read_input_for_day::<String>("day-6")?;
+  let part = read_part_for_day();
+
+  let answer = if part == 1 {
+    calculate::<Part1>(input)
+  } else {
+    calculate::<Part2>(input)
+  };
+
+  println!("Day 6 Part {} answer: {}", part, answer);
   Ok(())
 }
