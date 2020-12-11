@@ -8,7 +8,7 @@ pub enum AdventError {
   UnrecognizedOperation,
 }
 
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Operation {
   Nop,
   Acc,
